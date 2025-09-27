@@ -10,6 +10,8 @@ func main() {
 	// register the home function as the handler for the "/" URL pattern.
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", home)
+	mux.HandleFunc("/snippet/view", snippetView)
+	mux.HandleFunc("/snippet/create", snippetCreate)
 
 	// Use the http.ListenAndServe() function to start a new web server. We pass in
 	// two parameters: the TCP network address to listen on (in this case ":4000")
@@ -21,6 +23,25 @@ func main() {
 	log.Fatal(err)
 }
 
-func home(w http.ResponseWriter, _ *http.Request) {
-	w.Write([]byte("Hello from Snippetbox!"))
+func snippetCreate(w http.ResponseWriter, r *http.Request) {
+	_, _ = w.Write([]byte("Create a new snippet . . . "))
+}
+
+// snippetView add a snippetView handler function.
+func snippetView(w http.ResponseWriter, r *http.Request) {
+	_, _ = w.Write([]byte("Display a specific snippet . . . "))
+}
+
+// snippetCreate add snippetCreate handler function.
+func home(w http.ResponseWriter, r *http.Request) {
+	// Check if the current request URL path exactly maches "/". If it doesn't, use
+	// the http.NotFound() function to send a 404 response to the client.
+	// Importantly, we then return from the handler. If we don't return the handler
+	// would keep executing and also write the "Hello from Snippetbox!" message.
+	if r.URL.Path != "/" {
+		http.NotFound(w, r)
+		return
+	}
+
+	_, _ = w.Write([]byte("Hello from Snippetbox!"))
 }
